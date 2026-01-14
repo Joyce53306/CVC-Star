@@ -19,7 +19,6 @@
         :root { --pink: #f8a5c2; --blue: #778beb; --bg: #fffbe6; --gold: #feca57; --accent: #54a0ff; --green: #b2ff59; }
         * { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; box-sizing: border-box; }
         
-        /* 全域使用 Andika 字體，確保所有 a 都是手寫體 */
         body { 
             font-family: 'Andika', sans-serif; 
             background-color: var(--bg); 
@@ -28,7 +27,7 @@
             padding: 10px; 
         }
         
-        .container { max-width: 600px; margin: auto; padding: 20px; background: white; border-radius: 40px; box-shadow: 0 15px 0 #f0e68c; min-height: 95vh; position: relative; }
+        .container { max-width: 600px; margin: auto; padding: 20px; background: white; border-radius: 40px; box-shadow: 0 15px 0 #f0e68c; min-height: 95vh; position: relative; display: flex; flex-direction: column; }
         .header { color: var(--accent); font-size: 28px; font-weight: bold; margin-bottom: 10px; font-weight: 700; }
         .stars { font-size: 40px; color: var(--gold); min-height: 50px; }
         
@@ -39,7 +38,6 @@
         .word-pic { font-size: 80px; margin: 20px 0; }
         .choice-container { display: flex; justify-content: space-around; margin: 25px 0; }
         
-        /* 選項按鈕字體設定 */
         .circle-btn { 
             width: 140px; 
             height: 140px; 
@@ -59,6 +57,21 @@
         .rec-box { background: #fdfdfd; border: 2px solid #eee; border-radius: 30px; padding: 15px; margin-top: 15px; }
         .rec-btn { width: 60px; height: 60px; border-radius: 50%; border: none; background: #ff5252; color: white; font-size: 24px; cursor: pointer; }
         .play-btn { width: 100%; background: var(--green); border: none; padding: 12px; border-radius: 20px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; font-family: 'Andika', sans-serif; }
+
+        /* 回首頁按鈕樣式 */
+        .home-btn { 
+            background: #eee; 
+            color: #666; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 20px; 
+            font-size: 18px; 
+            margin-top: auto; 
+            cursor: pointer; 
+            font-family: 'Andika';
+            display: inline-block;
+            align-self: center;
+        }
 
         .hidden { display: none !important; }
         .victory-jump { animation: jump 0.5s ease infinite alternate; }
@@ -84,7 +97,7 @@
     <div id="view-families" class="hidden">
         <h2 class="header" id="family-title">Word Families</h2>
         <div class="grid" id="family-list"></div>
-        <button onclick="location.reload()" style="margin-top:30px; background:none; border:none; color:gray; cursor:pointer; font-family: 'Andika'; font-weight: bold;">⬅ Back</button>
+        <button class="home-btn" onclick="goHome()" style="margin-top: 30px;">🏠 Home</button>
     </div>
 
     <div id="view-game" class="hidden">
@@ -107,6 +120,8 @@
             </div>
             <button class="play-btn" style="background:var(--accent); color:white; margin-top:15px;" onclick="nextRound()">NEXT ➔</button>
         </div>
+        
+        <button class="home-btn" onclick="goHome()">🏠 Home</button>
     </div>
 </div>
 
@@ -114,8 +129,19 @@
     const victoryAudio = new Audio('https://www.myinstants.com/media/sounds/final-fantasy-vii-victory-fanfare-1.mp3');
     victoryAudio.preload = 'auto';
 
+    // 停止勝利音樂的函式
+    function stopVictoryMusic() {
+        victoryAudio.pause();
+        victoryAudio.currentTime = 0;
+    }
+
     function unlockAudio() {
-        victoryAudio.play().then(() => { victoryAudio.pause(); victoryAudio.currentTime = 0; }).catch(() => {});
+        victoryAudio.play().then(() => { stopVictoryMusic(); }).catch(() => {});
+    }
+
+    function goHome() {
+        stopVictoryMusic();
+        location.reload();
     }
 
     const cvcData = {
@@ -178,6 +204,7 @@
     }
 
     function nextRound() {
+        stopVictoryMusic(); // 進入下一題時停止音樂
         document.getElementById('question-area').classList.remove('hidden');
         document.getElementById('feedback-area').classList.add('hidden');
         document.getElementById('playRecBtn').classList.add('hidden');
@@ -188,7 +215,6 @@
         document.getElementById('word-emoji').innerText = data.emoji;
         document.getElementById('game-title').innerText = `-${currentFamily} Family`;
 
-        // 干擾項
         const distractor = "sun"; 
         const options = [currentTarget, distractor].sort(() => Math.random() - 0.5);
         document.getElementById('opt1').innerText = options[0];
@@ -205,6 +231,7 @@
     }
 
     function checkAnswer(el) {
+        stopVictoryMusic(); // 點擊選項時若音樂還在播也立刻停止
         if (el.innerText === currentTarget) {
             score++; updateStars();
             document.getElementById('question-area').classList.add('hidden');
