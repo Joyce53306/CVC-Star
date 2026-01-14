@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CVC Phonics Level Up! 🚀</title>
+    <title>CVC Star Hero 🚀</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap" rel="stylesheet">
     
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,25 +18,47 @@
     <style>
         :root { --pink: #f8a5c2; --blue: #778beb; --bg: #fffbe6; --gold: #feca57; --accent: #54a0ff; --green: #b2ff59; }
         * { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; box-sizing: border-box; }
-        body { font-family: 'Arial Rounded MT Bold', sans-serif; background-color: var(--bg); text-align: center; margin: 0; padding: 10px; }
+        
+        /* 全域使用 Andika 字體，確保所有 a 都是手寫體 */
+        body { 
+            font-family: 'Andika', sans-serif; 
+            background-color: var(--bg); 
+            text-align: center; 
+            margin: 0; 
+            padding: 10px; 
+        }
         
         .container { max-width: 600px; margin: auto; padding: 20px; background: white; border-radius: 40px; box-shadow: 0 15px 0 #f0e68c; min-height: 95vh; position: relative; }
-        .header { color: var(--accent); font-size: 28px; font-weight: bold; margin-bottom: 10px; }
+        .header { color: var(--accent); font-size: 28px; font-weight: bold; margin-bottom: 10px; font-weight: 700; }
         .stars { font-size: 40px; color: var(--gold); min-height: 50px; }
         
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
-        .btn-vowel { padding: 25px 10px; background: var(--pink); color: white; border-radius: 20px; font-size: 30px; cursor: pointer; border: none; box-shadow: 0 5px #f681a2; }
-        .btn-family { padding: 15px 5px; background: #e3f2fd; color: #1976D2; border-radius: 15px; font-size: 20px; cursor: pointer; border: 1px solid #bbdefb; box-shadow: 0 4px #90caf9; }
+        .btn-vowel { padding: 25px 10px; background: var(--pink); color: white; border-radius: 20px; font-size: 45px; cursor: pointer; border: none; box-shadow: 0 5px #f681a2; font-family: 'Andika', sans-serif; font-weight: 700; }
+        .btn-family { padding: 15px 5px; background: #e3f2fd; color: #1976D2; border-radius: 15px; font-size: 26px; cursor: pointer; border: 1px solid #bbdefb; box-shadow: 0 4px #90caf9; font-family: 'Andika', sans-serif; font-weight: 700; }
 
         .word-pic { font-size: 80px; margin: 20px 0; }
         .choice-container { display: flex; justify-content: space-around; margin: 25px 0; }
-        .circle-btn { width: 140px; height: 140px; border-radius: 50%; border: 8px solid white; font-size: 28px; font-weight: bold; color: white; cursor: pointer; transition: 0.2s; box-shadow: 0 8px 0 rgba(0,0,0,0.1); }
+        
+        /* 選項按鈕字體設定 */
+        .circle-btn { 
+            width: 140px; 
+            height: 140px; 
+            border-radius: 50%; 
+            border: 8px solid white; 
+            font-size: 34px; 
+            font-weight: 700; 
+            color: white; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            box-shadow: 0 8px 0 rgba(0,0,0,0.1); 
+            font-family: 'Andika', sans-serif; 
+        }
         .pink { background-color: var(--pink); }
         .blue { background-color: #bbdefb; color: #1565c0 !important; }
 
         .rec-box { background: #fdfdfd; border: 2px solid #eee; border-radius: 30px; padding: 15px; margin-top: 15px; }
         .rec-btn { width: 60px; height: 60px; border-radius: 50%; border: none; background: #ff5252; color: white; font-size: 24px; cursor: pointer; }
-        .play-btn { width: 100%; background: var(--green); border: none; padding: 12px; border-radius: 20px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .play-btn { width: 100%; background: var(--green); border: none; padding: 12px; border-radius: 20px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; font-family: 'Andika', sans-serif; }
 
         .hidden { display: none !important; }
         .victory-jump { animation: jump 0.5s ease infinite alternate; }
@@ -43,7 +69,7 @@
 
 <div class="container">
     <div id="view-vowels">
-        <h2 class="header">CVC World 🚀</h2>
+        <h2 class="header">CVC Star Hero 🚀</h2>
         <div class="stars">✨✨✨</div>
         <p>Pick a Sound!</p>
         <div class="grid">
@@ -58,7 +84,7 @@
     <div id="view-families" class="hidden">
         <h2 class="header" id="family-title">Word Families</h2>
         <div class="grid" id="family-list"></div>
-        <button onclick="location.reload()" style="margin-top:30px; background:none; border:none; color:gray; cursor:pointer;">⬅ Back</button>
+        <button onclick="location.reload()" style="margin-top:30px; background:none; border:none; color:gray; cursor:pointer; font-family: 'Andika'; font-weight: bold;">⬅ Back</button>
     </div>
 
     <div id="view-game" class="hidden">
@@ -162,7 +188,8 @@
         document.getElementById('word-emoji').innerText = data.emoji;
         document.getElementById('game-title').innerText = `-${currentFamily} Family`;
 
-        const distractor = "pin"; // 簡單干擾項
+        // 干擾項
+        const distractor = "sun"; 
         const options = [currentTarget, distractor].sort(() => Math.random() - 0.5);
         document.getElementById('opt1').innerText = options[0];
         document.getElementById('opt2').innerText = options[1];
@@ -217,5 +244,4 @@
     function playBack() { if(audioUrl) new Audio(audioUrl).play(); }
 </script>
 </body>
-
 </html>
