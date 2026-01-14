@@ -1,0 +1,17 @@
+{
+  "short_name": "CVC Hero",
+  "name": "CVC Phonics Level Up",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/5402/5402751.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "theme_color": "#54a0ff",
+  "background_color": "#fffbe6",
+  "orientation": "portrait"
+}

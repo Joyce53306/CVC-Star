@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>CVC Phonics Level Up! 🚀</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CVC Hero">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/5402/5402751.png">
+
+    <style>
+        :root { --pink: #f8a5c2; --blue: #778beb; --bg: #fffbe6; --gold: #feca57; --accent: #54a0ff; --green: #b2ff59; }
+        * { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; box-sizing: border-box; }
+        body { font-family: 'Arial Rounded MT Bold', sans-serif; background-color: var(--bg); text-align: center; margin: 0; padding: 10px; }
+        
+        .container { max-width: 600px; margin: auto; padding: 20px; background: white; border-radius: 40px; box-shadow: 0 15px 0 #f0e68c; min-height: 95vh; position: relative; }
+        .header { color: var(--accent); font-size: 28px; font-weight: bold; margin-bottom: 10px; }
+        .stars { font-size: 40px; color: var(--gold); min-height: 50px; }
+        
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+        .btn-vowel { padding: 25px 10px; background: var(--pink); color: white; border-radius: 20px; font-size: 30px; cursor: pointer; border: none; box-shadow: 0 5px #f681a2; }
+        .btn-family { padding: 15px 5px; background: #e3f2fd; color: #1976D2; border-radius: 15px; font-size: 20px; cursor: pointer; border: 1px solid #bbdefb; box-shadow: 0 4px #90caf9; }
+
+        .word-pic { font-size: 80px; margin: 20px 0; }
+        .choice-container { display: flex; justify-content: space-around; margin: 25px 0; }
+        .circle-btn { width: 140px; height: 140px; border-radius: 50%; border: 8px solid white; font-size: 28px; font-weight: bold; color: white; cursor: pointer; transition: 0.2s; box-shadow: 0 8px 0 rgba(0,0,0,0.1); }
+        .pink { background-color: var(--pink); }
+        .blue { background-color: #bbdefb; color: #1565c0 !important; }
+
+        .rec-box { background: #fdfdfd; border: 2px solid #eee; border-radius: 30px; padding: 15px; margin-top: 15px; }
+        .rec-btn { width: 60px; height: 60px; border-radius: 50%; border: none; background: #ff5252; color: white; font-size: 24px; cursor: pointer; }
+        .play-btn { width: 100%; background: var(--green); border: none; padding: 12px; border-radius: 20px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+        .hidden { display: none !important; }
+        .victory-jump { animation: jump 0.5s ease infinite alternate; }
+        @keyframes jump { from { transform: translateY(0); } to { transform: translateY(-10px); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="view-vowels">
+        <h2 class="header">CVC World 🚀</h2>
+        <div class="stars">✨✨✨</div>
+        <p>Pick a Sound!</p>
+        <div class="grid">
+            <button class="btn-vowel" onclick="unlockAudio(); showFamilies('a')">a</button>
+            <button class="btn-vowel" onclick="unlockAudio(); showFamilies('e')" style="background: #4db6ac; box-shadow: 0 5px #00897b;">e</button>
+            <button class="btn-vowel" onclick="unlockAudio(); showFamilies('i')" style="background: #7986cb; box-shadow: 0 5px #5c6bc0;">i</button>
+            <button class="btn-vowel" onclick="unlockAudio(); showFamilies('o')" style="background: #ffb74d; box-shadow: 0 5px #fb8c00;">o</button>
+            <button class="btn-vowel" onclick="unlockAudio(); showFamilies('u')" style="background: #ba68c8; box-shadow: 0 5px #8e24aa;">u</button>
+        </div>
+    </div>
+
+    <div id="view-families" class="hidden">
+        <h2 class="header" id="family-title">Word Families</h2>
+        <div class="grid" id="family-list"></div>
+        <button onclick="location.reload()" style="margin-top:30px; background:none; border:none; color:gray; cursor:pointer;">⬅ Back</button>
+    </div>
+
+    <div id="view-game" class="hidden">
+        <div class="header" id="game-title">-at Family</div>
+        <div class="stars" id="star-display">☆☆☆☆☆</div>
+        <div class="word-pic" id="word-emoji">🐱</div>
+        
+        <div id="question-area">
+            <div class="choice-container">
+                <button id="opt1" class="circle-btn pink" onclick="checkAnswer(this)"></button>
+                <button id="opt2" class="circle-btn blue" onclick="checkAnswer(this)"></button>
+            </div>
+        </div>
+
+        <div id="feedback-area" class="hidden">
+            <div class="rec-box">
+                <button id="recBtn" class="rec-btn" onclick="toggleRecording()">🎤</button>
+                <p id="rec-hint" style="font-size:12px; color:gray;">點一下錄音</p>
+                <button id="playRecBtn" class="play-btn hidden" onclick="playBack()">▶️ 聽我的聲音</button>
+            </div>
+            <button class="play-btn" style="background:var(--accent); color:white; margin-top:15px;" onclick="nextRound()">NEXT ➔</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const victoryAudio = new Audio('https://www.myinstants.com/media/sounds/final-fantasy-vii-victory-fanfare-1.mp3');
+    victoryAudio.preload = 'auto';
+
+    function unlockAudio() {
+        victoryAudio.play().then(() => { victoryAudio.pause(); victoryAudio.currentTime = 0; }).catch(() => {});
+    }
+
+    const cvcData = {
+        'a': {
+            'at': { emoji: '🐱', words: ['cat', 'bat', 'hat', 'mat', 'rat'] },
+            'ad': { emoji: '🧔', words: ['dad', 'sad', 'mad', 'bad', 'pad'] },
+            'an': { emoji: '🚐', words: ['van', 'pan', 'can', 'fan', 'man'] },
+            'am': { emoji: '🍞', words: ['jam', 'ham', 'ram', 'yam'] },
+            'ap': { emoji: '🗺️', words: ['map', 'cap', 'tap', 'nap'] },
+            'ag': { emoji: '🛍️', words: ['bag', 'rag', 'tag', 'wag'] }
+        },
+        'e': {
+            'et': { emoji: '🚀', words: ['jet', 'net', 'pet', 'wet', 'vet'] },
+            'en': { emoji: '🐔', words: ['hen', 'ten', 'pen', 'men', 'den'] },
+            'ed': { emoji: '🛏️', words: ['bed', 'red', 'wed', 'fed'] }
+        },
+        'i': {
+            'ig': { emoji: '🐷', words: ['pig', 'wig', 'big', 'dig', 'fig'] },
+            'in': { emoji: '🗑️', words: ['bin', 'pin', 'fin', 'win', 'tin'] },
+            'ip': { emoji: '👄', words: ['lip', 'zip', 'tip', 'hip', 'dip'] },
+            'it': { emoji: '🧘', words: ['sit', 'hit', 'kit', 'fit', 'bit'] }
+        },
+        'o': {
+            'og': { emoji: '🐶', words: ['dog', 'log', 'jog', 'hog'] },
+            'op': { emoji: '🧹', words: ['mop', 'top', 'hop', 'pop', 'cop'] },
+            'ot': { emoji: '🍲', words: ['pot', 'hot', 'dot', 'cot'] },
+            'ox': { emoji: '📦', words: ['box', 'fox'] }
+        },
+        'u': {
+            'ug': { emoji: '🐞', words: ['bug', 'hug', 'jug', 'mug', 'rug'] },
+            'un': { emoji: '☀️', words: ['sun', 'run', 'bun', 'nun'] },
+            'ut': { emoji: '🥜', words: ['nut', 'cut', 'hut'] },
+            'ub': { emoji: '🛀', words: ['tub', 'cub', 'sub', 'rub'] }
+        }
+    };
+
+    let currentVowel = '', currentFamily = '', currentTarget = '', score = 0;
+    let mediaRecorder, audioChunks = [], audioUrl, isRecording = false;
+
+    function showFamilies(v) {
+        currentVowel = v;
+        document.getElementById('view-vowels').classList.add('hidden');
+        document.getElementById('view-families').classList.remove('hidden');
+        document.getElementById('family-title').innerText = `Short ${v} Families`;
+        const list = document.getElementById('family-list');
+        list.innerHTML = '';
+        Object.keys(cvcData[v]).forEach(f => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-family'; btn.innerText = `-${f}`;
+            btn.onclick = () => startGame(f);
+            list.appendChild(btn);
+        });
+    }
+
+    function startGame(f) {
+        currentFamily = f; score = 0;
+        document.getElementById('view-families').classList.add('hidden');
+        document.getElementById('view-game').classList.remove('hidden');
+        nextRound();
+    }
+
+    function nextRound() {
+        document.getElementById('question-area').classList.remove('hidden');
+        document.getElementById('feedback-area').classList.add('hidden');
+        document.getElementById('playRecBtn').classList.add('hidden');
+        document.getElementById('star-display').classList.remove('victory-jump');
+        
+        const data = cvcData[currentVowel][currentFamily];
+        currentTarget = data.words[Math.floor(Math.random() * data.words.length)];
+        document.getElementById('word-emoji').innerText = data.emoji;
+        document.getElementById('game-title').innerText = `-${currentFamily} Family`;
+
+        const distractor = "pin"; // 簡單干擾項
+        const options = [currentTarget, distractor].sort(() => Math.random() - 0.5);
+        document.getElementById('opt1').innerText = options[0];
+        document.getElementById('opt2').innerText = options[1];
+        updateStars();
+        speak(currentTarget);
+    }
+
+    function speak(t) {
+        window.speechSynthesis.cancel();
+        const m = new SpeechSynthesisUtterance(t);
+        m.lang = 'en-US'; m.rate = 0.8;
+        window.speechSynthesis.speak(m);
+    }
+
+    function checkAnswer(el) {
+        if (el.innerText === currentTarget) {
+            score++; updateStars();
+            document.getElementById('question-area').classList.add('hidden');
+            document.getElementById('feedback-area').classList.remove('hidden');
+            if (score > 0 && score % 5 === 0) {
+                victoryAudio.play();
+                document.getElementById('star-display').classList.add('victory-jump');
+            }
+        } else { speak("Try again"); }
+    }
+
+    function updateStars() {
+        let s = score % 5 === 0 && score !== 0 ? 5 : score % 5;
+        document.getElementById('star-display').innerText = "★".repeat(s) + "☆".repeat(5 - s);
+    }
+
+    function toggleRecording() {
+        if (!isRecording) {
+            audioChunks = []; mediaRecorder.start(); isRecording = true;
+            document.getElementById('recBtn').innerText = "⏹️";
+        } else {
+            mediaRecorder.stop(); isRecording = false;
+            document.getElementById('recBtn').innerText = "🎤";
+        }
+    }
+
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+        mediaRecorder.onstop = () => {
+            const blob = new Blob(audioChunks, { type: 'audio/wav' });
+            audioUrl = URL.createObjectURL(blob);
+            document.getElementById('playRecBtn').classList.remove('hidden');
+        };
+    });
+
+    function playBack() { if(audioUrl) new Audio(audioUrl).play(); }
+</script>
+</body>
+</html>
