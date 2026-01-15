@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
     
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -20,7 +20,8 @@
         * { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; box-sizing: border-box; }
         
         body { 
-            font-family: 'Andika', sans-serif; 
+            /* 全域套用 Itim 字體，確保小寫 a 和 g 呈現書寫體 */
+            font-family: 'Itim', cursive, sans-serif; 
             background-color: var(--bg); 
             text-align: center; 
             margin: 0; 
@@ -28,12 +29,14 @@
         }
         
         .container { max-width: 600px; margin: auto; padding: 20px; background: white; border-radius: 40px; box-shadow: 0 15px 0 #f0e68c; min-height: 95vh; position: relative; display: flex; flex-direction: column; }
-        .header { color: var(--accent); font-size: 28px; font-weight: bold; margin-bottom: 10px; font-weight: 700; }
+        .header { color: var(--accent); font-size: 28px; font-weight: bold; margin-bottom: 10px; }
         .stars { font-size: 40px; color: var(--gold); min-height: 50px; }
         
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
-        .btn-vowel { padding: 25px 10px; background: var(--pink); color: white; border-radius: 20px; font-size: 45px; cursor: pointer; border: none; box-shadow: 0 5px #f681a2; font-family: 'Andika', sans-serif; font-weight: 700; }
-        .btn-family { padding: 15px 5px; background: #e3f2fd; color: #1976D2; border-radius: 15px; font-size: 26px; cursor: pointer; border: 1px solid #bbdefb; box-shadow: 0 4px #90caf9; font-family: 'Andika', sans-serif; font-weight: 700; }
+        
+        /* 元音與家群組按鈕樣式調整 */
+        .btn-vowel { padding: 25px 10px; background: var(--pink); color: white; border-radius: 20px; font-size: 45px; cursor: pointer; border: none; box-shadow: 0 5px #f681a2; font-family: 'Itim', cursive; }
+        .btn-family { padding: 15px 5px; background: #e3f2fd; color: #1976D2; border-radius: 15px; font-size: 26px; cursor: pointer; border: 1px solid #bbdefb; box-shadow: 0 4px #90caf9; font-family: 'Itim', cursive; }
 
         .word-pic { font-size: 80px; margin: 20px 0; }
         .choice-container { display: flex; justify-content: space-around; margin: 25px 0; }
@@ -43,22 +46,20 @@
             height: 140px; 
             border-radius: 50%; 
             border: 8px solid white; 
-            font-size: 34px; 
-            font-weight: 700; 
+            font-size: 38px; /* 稍微調大一點，讓書寫體的線條更清楚 */
             color: white; 
             cursor: pointer; 
             transition: 0.2s; 
             box-shadow: 0 8px 0 rgba(0,0,0,0.1); 
-            font-family: 'Andika', sans-serif; 
+            font-family: 'Itim', cursive; 
         }
         .pink { background-color: var(--pink); }
         .blue { background-color: #bbdefb; color: #1565c0 !important; }
 
         .rec-box { background: #fdfdfd; border: 2px solid #eee; border-radius: 30px; padding: 15px; margin-top: 15px; }
         .rec-btn { width: 60px; height: 60px; border-radius: 50%; border: none; background: #ff5252; color: white; font-size: 24px; cursor: pointer; }
-        .play-btn { width: 100%; background: var(--green); border: none; padding: 12px; border-radius: 20px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; font-family: 'Andika', sans-serif; }
+        .play-btn { width: 100%; background: var(--green); border: none; padding: 12px; border-radius: 20px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; font-family: 'Itim', cursive; }
 
-        /* 回首頁按鈕樣式 */
         .home-btn { 
             background: #eee; 
             color: #666; 
@@ -68,7 +69,7 @@
             font-size: 18px; 
             margin-top: auto; 
             cursor: pointer; 
-            font-family: 'Andika';
+            font-family: 'Itim', cursive;
             display: inline-block;
             align-self: center;
         }
@@ -126,10 +127,10 @@
 </div>
 
 <script>
+    /* JavaScript 邏輯保持不變 */
     const victoryAudio = new Audio('https://www.myinstants.com/media/sounds/final-fantasy-vii-victory-fanfare-1.mp3');
     victoryAudio.preload = 'auto';
 
-    // 停止勝利音樂的函式
     function stopVictoryMusic() {
         victoryAudio.pause();
         victoryAudio.currentTime = 0;
@@ -204,7 +205,7 @@
     }
 
     function nextRound() {
-        stopVictoryMusic(); // 進入下一題時停止音樂
+        stopVictoryMusic();
         document.getElementById('question-area').classList.remove('hidden');
         document.getElementById('feedback-area').classList.add('hidden');
         document.getElementById('playRecBtn').classList.add('hidden');
@@ -231,7 +232,7 @@
     }
 
     function checkAnswer(el) {
-        stopVictoryMusic(); // 點擊選項時若音樂還在播也立刻停止
+        stopVictoryMusic();
         if (el.innerText === currentTarget) {
             score++; updateStars();
             document.getElementById('question-area').classList.add('hidden');
